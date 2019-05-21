@@ -6,7 +6,9 @@
          net/dns
          net/url-string
          racket/class
+         racket/cmdline
          racket/match
+         racket/port
          racket/random
          racquel
          web-server/dispatch
