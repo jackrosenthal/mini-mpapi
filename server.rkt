@@ -238,6 +238,7 @@ to use this authentication server.")]
          #:wrap (make-wrapper (hasheq 'title "New Password")))]
        [else
         (send user set-password! password)
+        (update-data-object db user)
         (query-exec db
                     "delete from password_resets where user_id = $1"
                     (get-column id user))
