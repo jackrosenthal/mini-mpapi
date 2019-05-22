@@ -1,6 +1,7 @@
 #lang racket/base
 
 (require net/base64
+         racket/string
          web-server/dispatch/bidi-match
          web-server/dispatch/coercion)
 
@@ -12,10 +13,17 @@
             (define-bidi-match-expander id in/m out/m))]))
 
 (define (base64-string->bytes s)
-  (base64-decode (string->bytes/utf-8 s)))
+  (base64-decode (string->bytes/utf-8
+                  (string-replace
+                   (string-replace s "-" "/")
+                   "_" "+"))))
 
 (define (bytes->base64-string b)
-  (bytes->string/utf-8 (base64-encode b #"")))
+  (string-replace
+   (string-replace
+    (bytes->string/utf-8 (base64-encode b #""))
+    "/" "-")
+   "+" "_"))
 
 (define base64-string? (make-coerce-safe? base64-string->bytes))
 
