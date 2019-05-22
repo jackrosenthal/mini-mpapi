@@ -89,7 +89,11 @@
 (define (create-session user)
   (make-id-cookie "user" (number->string (get-column id user))
                   #:key (config-ref '(secret-salt))
-                  #:max-age (config-ref '(session-life))))
+                  #:max-age (config-ref '(session-life))
+                  #:secure? (equal? (config-ref '(application scheme))
+                                    "https")
+                  #:http-only? (equal? (config-ref '(application scheme))
+                                       "http")))
 
 (define-servlet (handle-sso)
   (let ([return-url (required-binding 'return string->url)])
@@ -103,11 +107,17 @@ to use this authentication server.")]
                   (redirect-to
                    (url-generator account-login-page)
                    #:headers
-                   (list (cookie->header
-                          (make-cookie "continue"
-                                       (url->string return-url)
-                                       #:max-age
-                                       (config-ref '(session-life))))))))])))
+                   (list
+                    (cookie->header
+                     (make-cookie
+                      "continue"
+                      (url->string return-url)
+                      #:max-age
+                      (config-ref '(session-life))
+                      #:secure?
+                      (equal? (config-ref '(application scheme)) "https")
+                      #:http-only?
+                      (equal? (config-ref '(application scheme)) "http")))))))])))
 
 (define (login-formlet [err #f])
   (formlet
