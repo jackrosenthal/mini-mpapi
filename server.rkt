@@ -147,17 +147,24 @@ to use this authentication server.")]
   (send/formlet (login-formlet err)
                 #:wrap (make-wrapper (hasheq 'title "Login"))))
 
+(define (make-url* scheme user host port path-absolute? path query fragment)
+  (let ([new-port (match* (scheme port)
+                    [("http" 80) #f]
+                    [("https" 443) #f]
+                    [(_ _) port])])
+    (make-url scheme user host new-port path-absolute? path query fragment)))
+
 (define (complete-request-uri req)
   (match (request-uri req)
     [(struct url (scheme user host port path-absolute? path query fragment))
-     (make-url (config-ref '(application scheme))
-               user
-               (config-ref '(application host))
-               (config-ref '(application port))
-               path-absolute?
-               path
-               query
-               fragment)]))
+     (make-url* (config-ref '(application scheme))
+                user
+                (config-ref '(application host))
+                (config-ref '(application port))
+                path-absolute?
+                path
+                query
+                fragment)]))
 
 (define (send-reset-email/f user)
   (λ (req)
