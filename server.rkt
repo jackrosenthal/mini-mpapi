@@ -313,7 +313,7 @@ to use this authentication server.")]
    [("account") account-login-page]
    [("account" "reset") reset-password-page]
    [("account" "reset" (base64-arg)) new-password-handler]
-   [("fetch") handle-fetch]
+   [("fetch") #:method "post" handle-fetch]
    [("slo") handle-slo]))
 
 (define (start-server)
