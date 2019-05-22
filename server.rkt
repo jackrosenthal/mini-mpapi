@@ -125,7 +125,8 @@ to use this authentication server.")]
           "Login"
           #:attributes '((class "btn btn-primary btn-lg btn-block")))
          unused})
-   (let* ([email (bytes->string/utf-8 (binding:form-value email))]
+   (let* ([email (string-downcase
+                  (bytes->string/utf-8 (binding:form-value email)))]
           [password (binding:form-value password)]
           [u (user-from-email email)])
      (cond
@@ -188,7 +189,8 @@ to use this authentication server.")]
     (p "Enter the email account you are registered with to send a reset email.")
     ,(=> (form-group (bs-email-input) #:label "Email") email)
     ,(=> (bs-submit "Continue") unused))
-   (let* ([email (bytes->string/utf-8 (binding:form-value email))]
+   (let* ([email (string-downcase
+                  (bytes->string/utf-8 (binding:form-value email)))]
           [u (user-from-email email)])
      (cond
        [(not u) (reset-password-page
