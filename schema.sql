@@ -6,7 +6,7 @@ DROP TABLE IF EXISTS users CASCADE;
 CREATE TABLE users (
 id           serial     PRIMARY KEY,
 email        text       UNIQUE NOT NULL,
-pwhash       bytea
+pwhash       text
 );
 
 CREATE TABLE password_resets (
