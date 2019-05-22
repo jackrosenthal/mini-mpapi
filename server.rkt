@@ -291,15 +291,17 @@ to use this authentication server.")]
   (define-values (user intention)
     (required-binding 'tkt get-ticket-data))
   (response/output
-   (jsexpr->bytes
-    (hasheq 'result "success"
-            'uid (get-column email user)
-            'attributes (hasheq 'uidNumber (get-column id user)
-                                'username (get-column email user)
-                                'first (get-column email user)
-                                'sn ""
-                                'email (get-column email user))
-            'intention intention))))
+   (λ (port)
+     (write-json
+      (hasheq 'result "success"
+              'uid (get-column email user)
+              'attributes (hasheq 'uidNumber (get-column id user)
+                                  'username (get-column email user)
+                                  'first (get-column email user)
+                                  'sn ""
+                                  'email (get-column email user))
+              'intention intention)
+      port))))
 
 (define-servlet (handle-slo)
   (response/xexpr
